@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a1220">
 <title>Semilla</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Semilla">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
@@ -89,7 +96,7 @@ dialog::backdrop{background:#000a}
 <body>
 <div class="wrap">
   <header>
-    <div class="logo">$</div>
+    <div class="logo"><svg viewBox="120 104 290 350" width="26" height="30" aria-hidden="true"><path d="M256 395 C256 335 256 285 256 232" fill="none" stroke="#06301f" stroke-width="26" stroke-linecap="round"/><path d="M256 300 C196 312 146 276 136 204 C206 198 252 232 256 300Z" fill="#06301f"/><path d="M256 252 C260 176 312 124 392 120 C396 196 344 256 256 252Z" fill="#06301f"/><path d="M170 412 Q256 356 342 412 Q256 446 170 412Z" fill="#06301f"/></svg></div>
     <div><h1>SEMILLA</h1><p>El dinero crece con cada aporte.</p></div>
     <div class="sp"></div>
     <button class="ib" onclick="go('set')" aria-label="Ajustes">⚙</button>
@@ -248,7 +255,7 @@ function pdf(){
   const L=filtered(),GL=goalsF(),AP=apsF();if(!L.length&&!GL.length&&!AP.length)return toast('No hay nada para exportar');
   if(!window.jspdf)return toast('No se pudo cargar el generador de PDF. Revisa tu conexión.');
   const doc=new window.jspdf.jsPDF(),I=sum(L,'i'),G=sum(L,'g'),n=x=>x.toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
-  doc.setFontSize(18);doc.text('Mi Control Financiero',14,18);
+  doc.setFontSize(18);doc.text('Semilla',14,18);
   doc.setFontSize(10);doc.setTextColor(110);
   doc.text('Historial de '+({all:'movimientos y metas',i:'ingresos',g:'gastos',m:'metas'})[filt]+' · generado el '+fd(new Date()),14,25);
   doc.setTextColor(0);let y=32;
@@ -288,7 +295,7 @@ function set(){
 }
 function addCat(t){const v=$('#nc'+t).value.trim();if(!v)return;if(S.cats[t].some(c=>c.toLowerCase()===v.toLowerCase()))return toast('Esa categoría ya existe');S.cats[t].push(v);save();render()}
 function delCat(t,i){if(S.cats[t].length<2)return toast('Debe quedar al menos una categoría');S.cats[t].splice(i,1);save();render()}
-function backup(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='copia-control-financiero.json';a.click()}
+function backup(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='copia-semilla.json';a.click()}
 function restore(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.mov||!d.cats)throw 0;S=d;fix();save();toast('Copia restaurada ✓');render()}catch(e){toast('El archivo no es válido')}};r.readAsText(f)}
 function reset(){if(confirm('Esto borrará todos tus movimientos y metas. ¿Continuar?')){S.mov=[];S.goals=[];S.log=[];S.aps=[];save();render()}}
 
@@ -318,6 +325,7 @@ function payGoal(id){
 function delGoal(id){if(confirm('¿Eliminar esta meta?')){S.goals=S.goals.filter(g=>g.id!==id);save();render()}}
 
 render();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script>
 </body>
 </html>
